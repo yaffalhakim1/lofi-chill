@@ -1,8 +1,6 @@
 import { Inter } from "next/font/google";
 import MusicPlayer from "@/components/Music";
 import Header from "@/components/Header";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 

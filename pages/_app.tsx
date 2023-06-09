@@ -9,7 +9,6 @@ import { ThemeProvider } from "next-themes";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class">
-      {/* <Component {...pageProps} /> */}
       <main className={`${inter.className}`}>
         <Component {...pageProps} />
       </main>

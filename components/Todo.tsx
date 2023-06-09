@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { IconListTask } from "./Icons";
 
 function Todo() {
@@ -15,6 +15,7 @@ function Todo() {
   function openModal() {
     setIsOpen(true);
   }
+
   const addTodo = (todo: string) => {
     setTodos((prevTodos) => [...prevTodos, { text: todo, checked: false }]);
     setInputValue("");
@@ -42,6 +43,7 @@ function Todo() {
       return updatedTodos;
     });
   };
+
   return (
     <>
       <IconListTask

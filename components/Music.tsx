@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Range } from "react-range";
 import Image from "next/image";
 
@@ -8,56 +8,57 @@ interface MusicPlayerProps {
   musicSrc?: string;
 }
 
-const MusicPlayer = (
-  props: MusicPlayerProps = {
-    shadowClass: "shadow-xl shadow-cyan-500/50",
-    imageSrc: "/images/lofi1.jpg",
-    musicSrc: "/music/lofi1.mp3",
-  }
-) => {
+const MusicPlayer = ({ shadowClass, imageSrc, musicSrc }: MusicPlayerProps) => {
   const [volume, setVolume] = useState(0.5); // Initial volume value
   const [isPlaying, setIsPlaying] = useState(false); // Track if the music is currently playing
   const [showRange, setShowRange] = useState(false); // Track the visibility of the range component
   const [isClicked, setIsClicked] = useState(false); // Track if the image is clicked
 
-  let audio: HTMLAudioElement | null = null;
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleVolumeChange = (values: number[]) => {
     const newVolume = values[0];
     setVolume(newVolume);
-    if (audio) {
-      audio.volume = newVolume;
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
     }
   };
 
   const handlePlayPause = () => {
     if (isPlaying) {
-      if (audio) {
-        audio.pause();
+      if (audioRef.current) {
+        audioRef.current.pause();
       }
     } else {
-      if (audio) {
-        audio.play();
+      if (audioRef.current) {
+        audioRef.current.play();
       }
     }
     setIsPlaying(!isPlaying); // Toggle the playing status
   };
 
   const handleImageClick = () => {
-    handlePlayPause();
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+    }
+    setIsPlaying((prevState) => !prevState);
     setIsClicked((prevIsClicked) => !prevIsClicked);
     setShowRange(!showRange); // Toggle the visibility of the range component
   };
 
   return (
-    <div className="flex items-center container">
-      <div className="relative ">
+    <div className="flex items-center">
+      <div className="relative">
         <Image
-          src={props.imageSrc ?? "/images/lofi1.jpg"}
+          src={imageSrc ?? "/images/lofi1.jpg"}
           alt="Music Player"
-          className={` cursor-pointer  rounded-lg ${
-            isClicked ? `scale-[105%] duration-300 ${props.shadowClass}` : ""
-          } `}
+          className={`cursor-pointer rounded-lg ${
+            isClicked ? `scale-[105%] duration-300 ${shadowClass}` : ""
+          }`}
           onClick={handleImageClick}
           width={300}
           height={300}
@@ -85,14 +86,11 @@ const MusicPlayer = (
           </div>
         )}
       </div>
-      <audio
-        ref={(el) => (audio = el)}
-        src={props.musicSrc} // Replace with the actual path to your audio file
-      />
+      <audio ref={audioRef} src={musicSrc} />
     </div>
   );
 };
 
 export default MusicPlayer;
 
-// Music by <a href="https://pixabay.com/users/lofi_hour-28600719/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=117209">Lofi_hour</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=117209">Pixabay</a> -> rain
+// // Music by <a href="https://pixabay.com/users/lofi_hour-28600719/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=117209">Lofi_hour</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=117209">Pixabay</a> -> rain
